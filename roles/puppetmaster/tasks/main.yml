@@ -1,0 +1,23 @@
+---
+- name: Install Puppet master and git
+  ansible.builtin.package:
+    name:
+      - puppetmaster
+      - git
+    state: present
+
+- name: Is /etc/puppet a repository?
+  ansible.builtin.stat:
+    path: /etc/puppet/.git
+  register: puppet_git_stat
+
+- name: Backup the default Puppet directory
+  ansible.builtin.command:
+    cmd: mv /etc/puppet /etc/puppet.bak
+  when: not puppet_git_stat.stat.exists
+
+- name: Puppet repository git checkout
+  ansible.builtin.git:
+    repo: 'https://gitlab.com/jkrcma/puppet-home.git'
+    dest: /etc/puppet
+    separate_git_dir: /opt/puppet.git

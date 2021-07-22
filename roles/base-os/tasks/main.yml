@@ -1,0 +1,34 @@
+---
+- include_tasks: setup-debian.yml
+  when: ansible_distribution == 'Debian'
+- include_tasks: setup-ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Fix /etc/hosts
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^(127.0.1.1\s+)'
+    line: '\1{{ hostname }}'
+    backrefs: true
+
+- name: Install puppet-agent
+  ansible.builtin.package:
+    name: puppet
+    state: present
+
+- name: Set puppet5.den as master
+  ansible.builtin.lineinfile:
+    path: /etc/puppet/puppet.conf
+    search_string: 'server = puppet5.den'
+    insertbefore: '^\[main\]$'
+    line: "server = puppet5.den\n"
+
+- name: Check puppet lib directory
+  ansible.builtin.find:
+    path: /var/lib/puppet
+  register: lib_puppet_dir
+
+- name: Run puppet-agent
+  ansible.builtin.command:
+    cmd: puppet agent --test
+  when: lib_puppet_dir.matched == 0

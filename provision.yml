@@ -1,0 +1,8 @@
+---
+- hosts: rpi4_poe
+  roles:
+    - rpi-poe
+    - base-os
+- hosts: ubuntu
+  roles:
+    - base-os

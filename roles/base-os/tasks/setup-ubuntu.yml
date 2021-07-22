@@ -1,0 +1,33 @@
+---
+- name: Set hostname
+  ansible.builtin.hostname:
+    name: "{{ hostname }}"
+    use: systemd
+
+- name: Clean up trash default packages
+  ansible.builtin.apt:
+    name:
+      - console-setup
+      - console-setup-linux
+      - dmsetup
+      - fuse
+      - gir1.2-glib-2.0
+      - keyboard-configuration
+      - kbd
+      - krb5-locales
+      - libglib2.0-data
+      - shared-mime-info
+      - ubuntu-advantage-tools
+      - xauth
+      - xdg-user-dirs
+      - xkb-data
+    purge: true
+    state: absent
+
+- name: Autoremove the rest
+  ansible.builtin.apt:
+    autoremove: true
+
+- name: Update packages to latest
+  ansible.builtin.apt:
+    upgrade: full

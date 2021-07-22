@@ -1,0 +1,13 @@
+---
+ubuntu:
+  hosts:
+    puppet5.den:
+      hostname: puppet5
+  vars:
+    ansible_become: true
+    ansible_user: ubuntu
+    ansible_password: ubuntu
+    ansible_python_interpreter: /usr/bin/python3
+puppetmaster:
+  hosts:
+    puppet5.den:
