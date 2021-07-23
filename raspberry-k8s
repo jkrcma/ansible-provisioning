@@ -5,6 +5,8 @@ rpi4_poe:
       hostname: rpi-k8s-01
     rpi-k8s-02.mgmt.den:
       hostname: rpi-k8s-02
+    rpi-k8s-03.mgmt.den:
+      hostname: rpi-k8s-03
   vars:
     ansible_become: true
     ansible_user: pi
