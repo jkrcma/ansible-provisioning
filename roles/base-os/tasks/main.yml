@@ -16,6 +16,11 @@
     name: puppet
     state: present
 
+- name: Enable puppet-agent
+  ansible.builtin.systemd:
+    name: puppet
+    enabled: true
+
 - name: Set puppet5.den as master
   ansible.builtin.lineinfile:
     path: /etc/puppet/puppet.conf
