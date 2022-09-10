@@ -28,7 +28,20 @@
     path: /var/lib/puppet
   register: lib_puppet_dir
 
-- name: Run puppet-agent
+- name: Run puppet-agent (network)
   ansible.builtin.command:
-    cmd: puppet agent --test
+    cmd: puppet agent --test --tags network
+  register: agent_result
+  retries: 5
+  failed_when: agent_result.rc not in (0, 2)
   when: lib_puppet_dir.matched == 0
+
+- name: Upgrade system packages
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: full
+
+- name: Reboot
+  ansible.builtin.reboot:
+    reboot_command: systemctl reboot
+    reboot_timeout: 180

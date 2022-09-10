@@ -3,6 +3,7 @@
   ansible.builtin.hostname:
     name: "{{ hostname }}"
     use: systemd
+  when: not is_lxc
 
 - name: Clean up trash default packages
   ansible.builtin.apt:
@@ -23,11 +24,113 @@
       - xkb-data
     purge: true
     state: absent
+  #when: not is_lxc
+
+- name: Clean up trash default packages (LXC)
+  ansible.builtin.apt:
+    name:
+      - apparmor
+      - apport
+      - apport-symptoms
+      - bcache-tools
+      - busybox-static
+      - cloud-guest-utils
+      - cloud-init
+      - cloud-initramfs-copymods
+      - cloud-initramfs-dyn-netconf
+      - command-not-found
+      - console-setup
+      - console-setup-linux
+      - cryptsetup
+      - cryptsetup-bin
+      - dbus
+      - dmeventd
+      - dmsetup
+      - bind9-dnsutils
+      - dosfstools
+      - dmidecode
+      - eatmydata
+      - ed
+      - ethtool
+      - fonts-ubuntu-console
+      - friendly-recovery
+      - ftp
+      - fuse
+      - gdisk
+      - gir1.2-glib-2.0
+      - hdparm
+      - info
+      - install-info
+      - iptables
+      - iputils-tracepath
+      - irqbalance
+      - iso-codes
+      - kbd
+      - kmod
+      - krb5-locales
+      - libaccountsservice0
+      - libasound2
+      - libdbus-1-3
+      - libdevmapper-event1.02.1
+      - libdrm2
+      - libeatmydata1
+      - libfuse2
+      - libgirepository-1.0-1
+      - libglib2.0-data
+      - libmspack0
+      - libnetfilter-conntrack3
+      - libnfnetlink0
+      - libnuma1
+      - libpam-systemd
+      - libparted2
+      - libpolkit-agent-1-0
+      - libpolkit-gobject-1-0
+      - libreadline5
+      - libsasl2-modules
+      - libxmuu1
+      - lshw
+      - lvm2
+      - manpages
+      - mdadm
+      - motd-news-config
+      - nano
+      - ncurses-term
+      - netcat-openbsd
+      - ntfs-3g
+      - open-iscsi
+      - open-vm-tools
+      - overlayroot
+      - parted
+      - pastebinit
+      - patch
+      - plymouth
+      - plymouth-theme-ubuntu-text
+      - pollinate
+      - popularity-contest
+      - powermgmt-base
+      - publicsuffix
+      - run-one
+      - shared-mime-info
+      - software-properties-common
+      - sosreport
+      - squashfs-tools
+      - ssh-import-id
+      - ubuntu-advantage-tools
+      - ubuntu-release-upgrader-core
+      - ufw
+      - unattended-upgrades
+      - update-manager-core
+      - update-notifier-common
+      - uuid-runtime
+      - xauth
+      - xdg-user-dirs
+      - xfsprogs
+      - xz-utils
+      - zerofree
+    purge: true
+    state: absent
+  when: is_lxc
 
 - name: Autoremove the rest
   ansible.builtin.apt:
     autoremove: true
-
-- name: Update packages to latest
-  ansible.builtin.apt:
-    upgrade: full

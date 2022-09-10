@@ -1,0 +1,4 @@
+---
+ansible_become: true
+ansible_host: "{{ lxd_host }}"
+lxc_exec_path: /snap/bin/lxc

@@ -3,11 +3,26 @@ ubuntu:
   hosts:
     puppet5.den:
       hostname: puppet5
-  vars:
-    ansible_become: true
-    ansible_user: ubuntu
-    ansible_password: ubuntu
-    ansible_python_interpreter: /usr/bin/python3
+    pihole-01.den:
+      hostname: pihole-01
+    pihole-02.den:
+      hostname: pihole-02
+    dns-01.den:
+      hostname: dns-01
+      lxd_host: rpi-lxd-01.mgmt.den
+      lxc_profiles: ['vlan30']
+    dns-02.den:
+      hostname: dns-02
+      lxd_host: rpi-lxd-02.mgmt.den
+      lxc_profiles: ['vlan30']
+    puppet-01.den:
+      hostname: puppet-01
+      lxd_host: rpi-lxd-01.mgmt.den
+      lxc_profiles: ['vlan30']
+    puppet-02.den:
+      hostname: puppet-02
+      lxd_host: rpi-lxd-02.mgmt.den
+      lxc_profiles: ['vlan30']
 puppetmaster:
   hosts:
     puppet5.den:

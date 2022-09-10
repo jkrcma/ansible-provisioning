@@ -1,0 +1,80 @@
+---
+- name: "Create container '{{ hostname }}' on {{ lxd_host }}"
+  community.general.lxd_container:
+    name: "{{ hostname }}"
+    ignore_volatile_options: true
+    state: started
+    source:
+      type: image
+      mode: pull
+      server: https://images.linuxcontainers.org
+      protocol: simplestreams
+      alias: ubuntu/focal/default/arm64
+    profiles: "{{ ['default'] + lxc_profiles }}"
+    wait_for_ipv4_addresses: false
+    timeout: 600
+
+- block:
+  - name: "Turn on DHCP on all interfaces manually"
+    ansible.builtin.command:
+      cmd: "{{ lxc_exec }} dhclient {{ item }}"
+    loop: "{{ interfaces }}"
+
+  - name: "Request DHCP & DNS changes"
+    pause:
+      prompt: "Please confirm the DHCP & DNS have been configured"
+
+  - name: "Release current DHCP leases"
+    ansible.builtin.command:
+      cmd: "{{ lxc_exec }} dhclient -r {{ item }}"
+    loop: "{{ interfaces }}"
+
+  - name: "Kill stray dhclient processes"
+    ansible.builtin.command:
+      cmd: "{{ lxc_exec }} pkill dhclient"
+
+  - name: "Renew DHCP leases"
+    ansible.builtin.command:
+      cmd: "{{ lxc_exec }} dhclient {{ item }}"
+    loop: "{{ interfaces }}"
+
+  - name: "Waiting for {{ hostname }} to become reachable..."
+    ansible.builtin.wait_for_connection:
+      delay: 5
+      timeout: 60
+    delegate_to: localhost
+    vars:
+      ansible_host: "{{ inventory_hostname }}"
+
+  - name: "Install openssh-server"
+    ansible.builtin.shell: >
+      {{ lxc_exec }} sh -c '
+      apt-get update &&
+      apt-get install -y openssh-server
+      '
+
+  - name: "Deploy provisioning SSH key for user {{ lxc_default_user }}"
+    block:
+      - name: "Ensure {{ ssh_directory }} permissions"
+        ansible.builtin.shell: >
+          {{ lxc_exec }} sh -c '
+          mkdir -p {{ ssh_directory }}
+          && chown {{ lxc_default_user }}:{{ lxc_default_user }} {{ ssh_directory }}
+          && chmod 700 {{ ssh_directory }}
+          '
+
+      - name: "Copy provisioning SSH key"
+        ansible.builtin.shell: >
+          {{ lxc_exec }} sh -c 'echo "{{ provision_ssh_key }}" > {{ ssh_directory }}/authorized_keys'
+    vars:
+        ssh_directory: /home/{{ lxc_default_user }}/.ssh
+
+  vars:
+    lxc_exec: "{{ lxc_exec_path }} exec {{ hostname }} --"
+    interfaces: "{{ ['eth0'] + lxc_profiles | map('replace', 'vlan', 'eth') | list }}"
+
+- name: "Gather facts"
+  ansible.builtin.setup:
+  vars:
+    ansible_host: "{{ inventory_hostname }}"
+    ansible_user: "{{ lxc_default_user }}"

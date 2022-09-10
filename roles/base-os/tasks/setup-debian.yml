@@ -2,4 +2,3 @@
 - name: Set hostname
   ansible.builtin.hostname:
     name: "{{ hostname }}"
-    use: debian
