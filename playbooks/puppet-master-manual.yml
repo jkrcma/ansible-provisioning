@@ -1,0 +1,5 @@
+---
+- hosts: puppetmasters
+  roles:
+    - lxc-preprovision
+    - puppetmaster

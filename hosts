@@ -1,0 +1,101 @@
+;;
+;; This inventory is oriented for host provisioning *only*.
+;; For shell commands please use the inventory `all`.
+;;
+
+;
+; All LXC containers
+;
+[lxcs]
+
+[lxcs:children]
+lxcs_01
+lxcs_02
+puppetmasters
+
+[lxcs:vars]
+provision_ssh_key="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGeX/9uo92CUV0spOD/lhwHUIJ40kxq4BY/NjqdVVhxb"
+
+;
+; Host-container alignment
+; Numerical suffix corresponds to the host name
+;
+[lxcs_01]
+dns-01.den lxc_profiles='["vlan30"]'
+pihole-01.den lxc_profiles='["vlan32"]'
+puppet-01.den lxc_profiles='["vlan30"]'
+
+[lxcs_01:vars]
+lxd_host=rpi-lxd-01.mgmt.den
+ansible_host="{{ lxd_host }}"
+
+[lxcs_02]
+dns-02.den lxc_profiles='["vlan30"]'
+pihole-02.den lxc_profiles='["vlan32"]'
+puppet-02.den lxc_profiles='["vlan30"]'
+
+[lxcs_02:vars]
+lxd_host=rpi-lxd-02.mgmt.den
+ansible_host="{{ lxd_host }}"
+
+;
+; Untested, mostly TODO
+;
+[lxcs_dogee]
+build.den
+docker.den
+kodi.den
+mediabox.den
+monitor.den
+nas.den
+prolink-overlay.den
+smtp.den
+torrent.den
+
+[lxcs_dogee:vars]
+lxd_host=dogee.mgmt.den
+
+;
+; LXC containers which serve as Puppet master server
+;
+[puppetmasters]
+puppet-01.den
+puppet-02.den
+
+;
+; All Raspberry Pi machines
+;
+[rpi_all]
+
+[rpi_all:children]
+rpi_k8s
+rpi_lxd
+
+;
+; Raspberrys used for Kubernetes
+;
+[rpi_k8s]
+rpi-k8s-01.mgmt.den
+rpi-k8s-02.mgmt.den
+rpi-k8s-03.mgmt.den
+
+[rpi_k8s:vars]
+; Based on Debian
+ansible_become=true
+ansible_user=pi
+ansible_password=raspberry
+ansible_python_interpreter=/usr/bin/python3
+
+;
+; Raspberrys used for hosting LXC containers
+;
+[rpi_lxd]
+rpi-lxd-01.mgmt.den
+rpi-lxd-02.mgmt.den
+
+[rpi_lxd:vars]
+; Based on Ubuntu LTS
+ansible_become=true
+ansible_user=ubuntu
+ansible_password=ubuntu
+ansible_python_interpreter=/usr/bin/python3

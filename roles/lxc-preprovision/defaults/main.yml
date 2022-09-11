@@ -1,4 +1,5 @@
 ---
 ansible_become: true
 ansible_host: "{{ lxd_host }}"
+lxc_default_user: ubuntu
 lxc_exec_path: /snap/bin/lxc

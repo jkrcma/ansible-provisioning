@@ -1,0 +1,9 @@
+- hosts: lxcs
+  gather_facts: false
+  roles:
+    - role: lxc-preprovision
+      tags: pre
+    - role: base-os
+  vars:
+    is_lxc: true
+    hostname: "{{ inventory_hostname_short }}"

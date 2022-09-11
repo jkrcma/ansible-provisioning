@@ -1,0 +1,12 @@
+---
+- hosts: rpi_k8s
+  roles:
+    - rpi-poe
+    - base-os
+  tags: k8s
+
+- hosts: rpi_lxd
+  roles:
+    - rpi-poe
+    - base-os
+  tags: lxd
