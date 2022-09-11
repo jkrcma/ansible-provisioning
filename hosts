@@ -27,7 +27,6 @@ puppet-01.den lxc_profiles='["vlan30"]'
 
 [lxcs_01:vars]
 lxd_host=rpi-lxd-01.mgmt.den
-ansible_host="{{ lxd_host }}"
 
 [lxcs_02]
 dns-02.den lxc_profiles='["vlan30"]'
@@ -36,7 +35,6 @@ puppet-02.den lxc_profiles='["vlan30"]'
 
 [lxcs_02:vars]
 lxd_host=rpi-lxd-02.mgmt.den
-ansible_host="{{ lxd_host }}"
 
 ;
 ; Untested, mostly TODO
