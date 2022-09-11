@@ -1,0 +1,5 @@
+---
+- name: Restart puppet-master
+  ansible.builtin.service:
+    name: puppet-master
+    state: restarted
