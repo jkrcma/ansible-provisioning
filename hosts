@@ -57,8 +57,9 @@ lxd_host=dogee.mgmt.den
 ; LXC containers which serve as Puppet master server
 ;
 [puppetmasters]
-puppet-01.den
-puppet-02.den
+puppet5.den puppet_role=primary
+puppet-01.den puppet_role=primary
+puppet-02.den puppet_role=secondary
 
 ;
 ; All Raspberry Pi machines
