@@ -43,7 +43,6 @@
       - console-setup-linux
       - cryptsetup
       - cryptsetup-bin
-      - dbus
       - dmeventd
       - dmsetup
       - bind9-dnsutils
@@ -70,7 +69,6 @@
       - krb5-locales
       - libaccountsservice0
       - libasound2
-      - libdbus-1-3
       - libdevmapper-event1.02.1
       - libdrm2
       - libeatmydata1
