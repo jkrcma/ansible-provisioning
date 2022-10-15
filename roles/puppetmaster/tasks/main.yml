@@ -60,7 +60,7 @@
 
 - name: Deploy environments with r10k
   ansible.builtin.command:
-    cmd: r10k deploy environment
+    cmd: r10k deploy environment production
     creates: /etc/puppet/code/environments/production
 
 - name: Set up .ssh directory
