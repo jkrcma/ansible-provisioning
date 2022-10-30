@@ -1,0 +1,10 @@
+---
+- name: Remove current keys
+  ansible.builtin.shell:
+    cmd: rm -v /etc/ssh/ssh_host_*
+
+- name: Reconfigure openssh-server
+  ansible.builtin.command:
+    cmd: dpkg-reconfigure openssh-server
+  environment:
+    DEBIAN_FRONTEND: noninteractive
