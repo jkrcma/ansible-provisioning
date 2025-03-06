@@ -1,7 +1,7 @@
 ---
 - name: Set hostname
   ansible.builtin.hostname:
-    name: "{{ hostname }}"
+    name: "{{ ansible_hostname }}"
     use: systemd
   when: not is_lxc
 

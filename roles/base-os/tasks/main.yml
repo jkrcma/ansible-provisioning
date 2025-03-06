@@ -8,7 +8,7 @@
   ansible.builtin.lineinfile:
     path: /etc/hosts
     regexp: '^(127.0.1.1\s+)'
-    line: '\1{{ hostname }}'
+    line: '\1{{ ansible_hostname }}'
     backrefs: true
 
 - name: Install puppet-agent
@@ -21,12 +21,12 @@
     name: puppet
     enabled: true
 
-- name: Set puppet5.den as master
+- name: Set puppet.den as master
   ansible.builtin.lineinfile:
     path: /etc/puppet/puppet.conf
-    search_string: 'server = puppet5.den'
+    search_string: 'server = puppet.den'
     insertbefore: '^\[main\]$'
-    line: "server = puppet5.den\n"
+    line: "server = puppet.den\n"
 
 - name: Check puppet lib directory
   ansible.builtin.find:
